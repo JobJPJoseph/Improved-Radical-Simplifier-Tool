@@ -1,0 +1,16 @@
+{
+  "name": "improved-radical-simplifier-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.3.1",
+    "mocha": "^11.7.4"
+  }
+}
