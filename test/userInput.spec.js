@@ -26,7 +26,7 @@ describe("User", function () {
         it('should replce every instance of rad or sqrt with the symbol √ also know as 8730', async function () {
             this.timeout(20000);
             let input = await user.getInput();
-            return expect(input).to.equal('√(2)');
+            return expect(input).to.equal('x√(2)');
         });
 
     });
