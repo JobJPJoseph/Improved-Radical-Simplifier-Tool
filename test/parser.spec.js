@@ -155,8 +155,21 @@ describe("Parser", function () {
             let tree1 = parser.parseExpression(tokens1);
             let tree2 = parser.parseExpression(tokens2);
 
+            expect(tree1.type).to.equal("Root");
+            expect(tree2.type).to.equal("BinaryExpression");
 
+            expect(tree1.base.value).to.equal('x');
+            expect(tree1.exponent.type).to.equal('BinaryExpression');
+            expect(tree1.exponent.left.type).to.equal('NumberLiteral');
+            expect(tree1.exponent.right.type).to.equal('NumberLiteral');
 
+            expect(tree2.left.type).to.equal("Exponentiation");
+            expect(tree2.left.index.type).to.equal("NumberLiteral");
+            expect(tree2.left.exponent.type).to.equal('NumberLiterl');
+            expect(tree2.left.exponent.value).to.equal('3');
+
+            expect(tree2.right.type).to.equal('NumberLiteral');
+            expect(tree2.right.value).to.equal('2');
         });
 
     });
