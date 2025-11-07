@@ -134,13 +134,13 @@ describe("Parser", function () {
         it('should return a tree where the root is a Exponentiation type', function () {
             let tokens = tokenizer.getTokens('x^3');
             let tree = parser.parseExpression(tokens);
-            expect(tree.type).to.equal('Root');
+            expect(tree.type).to.equal('Exponentiation');
 
-            expect(tree.index.type).to.equal("NumberLiteral");
-            expect(tree.index.value).to.equal("2");
+            expect(tree.base.type).to.equal("Identifier");
+            expect(tree.base.value).to.equal("x");
 
-            expect(tree.radicand.type).to.equal('Identifier');
-            expect(tree.radicand.value).to.equal('x');
+            expect(tree.exponent.type).to.equal('NumberLiteral');
+            expect(tree.exponent.value).to.equal('3');
         });
 
 
@@ -155,7 +155,7 @@ describe("Parser", function () {
             let tree1 = parser.parseExpression(tokens1);
             let tree2 = parser.parseExpression(tokens2);
 
-            expect(tree1.type).to.equal("Root");
+            expect(tree1.type).to.equal("Exponentiation");
             expect(tree2.type).to.equal("BinaryExpression");
 
             expect(tree1.base.value).to.equal('x');
@@ -164,8 +164,8 @@ describe("Parser", function () {
             expect(tree1.exponent.right.type).to.equal('NumberLiteral');
 
             expect(tree2.left.type).to.equal("Exponentiation");
-            expect(tree2.left.index.type).to.equal("NumberLiteral");
-            expect(tree2.left.exponent.type).to.equal('NumberLiterl');
+            expect(tree2.left.base.type).to.equal("Identifier");
+            expect(tree2.left.exponent.type).to.equal('NumberLiteral');
             expect(tree2.left.exponent.value).to.equal('3');
 
             expect(tree2.right.type).to.equal('NumberLiteral');
