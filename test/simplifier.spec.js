@@ -68,4 +68,15 @@ describe("Simplifier", function () {
 
     });
 
+    describe('Power', function () {
+
+        it('should return the result of raising the base to the exponent', function () {
+            let actual = simplifier.power(2, 3);
+            let expected = 8;
+
+            expect(actual).to.equal(expected);
+        });
+
+    });
+
 });
