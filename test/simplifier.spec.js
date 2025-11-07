@@ -17,28 +17,52 @@ describe("Simplifier", function () {
     let simplifier;
 
     before(function () {
-        tokenizer = new Tokenizer();
+        tokenizer = new Tokenizer(/\d+|[a-z]|[A-Z]|[-/+//(/)/^/√/\/*]/g);
         parser = new Parser();
         simplifier = new Simplifier();
     });
 
     context('Flattening Trees', function () {
 
-        let tokens = tokenizer.getTokens('12 + x * 3');
-        let tree = parser.parseExpression(tokens);
-
         describe('flattenAdd', function () {
 
             it('should decompose the input on the addition operator', function () {
-                let flattenedAdd = simplifier.flattenedAdd(tree);
-                let expFlattenedAdd = [
+                let tokens = tokenizer.getTokens('12 + x');
+                let tree = parser.parseExpression(tokens);
+                let flattenedAdd = simplifier.flattenAdd(tree);
+                let expected = [
+                   { type: "NumberLiteral", value: "12" },
+                   { type: "Identifier", value: "x" }
+                ];
 
-                ]
+                expect(flattenedAdd.length).to.equal(expected.length);
+
+                for (let i = 0; i < expected.length; i++) {
+                    expect(JSON.stringify(flattenedAdd[i])).to.equal(JSON.stringify(expected[i]));
+                }
+
             });
 
         });
 
         describe('flattenMulti', function () {
+
+            it('should decompose the input on the multiplication operator', function () {
+                let tokens = tokenizer.getTokens('12 * x');
+                let tree = parser.parseExpression(tokens);
+                let flattenedMulti = simplifier.flattenMulti(tree);
+                let expected = [
+                   { type: "NumberLiteral", value: "12" },
+                   { type: "Identifier", value: "x" }
+                ];
+
+                expect(flattenedMulti.length).to.equal(expected.length);
+
+                for (let i = 0; i < expected.length; i++) {
+                    expect(JSON.stringify(flattenedMulti[i])).to.equal(JSON.stringify(expected[i]));
+                }
+
+            });
 
         });
 
