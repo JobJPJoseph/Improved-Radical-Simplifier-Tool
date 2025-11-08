@@ -79,4 +79,46 @@ describe("Simplifier", function () {
 
     });
 
+    describe('CollectValuesUnderRadical', function () {
+
+        it('should traverse through the tree under the Root and collect all the values into a single string', function () {
+            let radical = {
+                type: "BinaryExpression",
+                operator: "*",
+                left: { type: "NumberLiteral", value: "3" },
+                right: { type: "Identifier", value: "x" },
+            };
+
+            let actual = simplifier.collectValuesUnderRadical(radical);
+            let expected = "3x";
+
+            expect(actual).to.equal(expected);
+        });
+
+    });
+
+    describe('ConvertObjectIntoKey', function () {
+
+        it('should callect all variables and values under the Root and convert it into a string', function () {
+            let variables = new Map();
+            variables.set("x", "2");
+            variables.set("y", "1");
+
+            let radical = {
+                type: "BinaryExpression",
+                operator: "*",
+                left: { type: "NumberLiteral", value: "3" },
+                right: { type: "Identifier", value: "x" },
+            };
+
+            let obj = { coeff: "2", vars: variables, root: radical };
+
+            let actual = simplifier.convertObjectIntoKey(obj);
+            let expected = "x^2y^1√3x";
+
+            expect(actual).to.equal(expected);
+        });
+
+    })
+
 });
