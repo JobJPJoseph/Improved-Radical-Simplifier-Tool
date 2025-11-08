@@ -145,4 +145,50 @@ describe("Simplifier", function () {
 
     });
 
+    describe('SquareNumberLiteral', function () {
+
+        it('should accept a tree/node and square the value by 2 and return a tree/node', function () {
+            let tree = { type: "NumberLiteral", value: "12" };
+            let actual = simplifier.squareNumberLiteral(tree);
+            let expected = {
+                type: "BinaryExpression",
+                operator: "*",
+                left: { type: "NumberLiteral", value: "2" },
+                right: {
+                    type: "Root",
+                    index: { type: "NumberLiteral", value: "2" },
+                    radicand: { type: "NumberLiteral", value: "3" }
+                }
+            }
+
+            expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+
+        });
+
+    });
+
+    describe('SquareVariable', function () {
+        let tree = {
+            type: "Exponentiation",
+            base: { type: "Identifier", value: "x"},
+            exponent: { type: "NumberLiteral", value: "3" },
+        }
+
+        let expected = {
+            type: "BinaryExpression",
+            left: { type: "Identifier", value: "x" },
+            right: {
+                type: "Root",
+                index: { type: "NumberLiteral", value: "2" },
+                radicand: { type: "Identifier", value: "x" },
+            },
+        }
+
+        let actual = simplifier.squareVariable(tree);
+    });
+
+    describe('SimplifyExponent', function () {
+
+    });
+
 });
