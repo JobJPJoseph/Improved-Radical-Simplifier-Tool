@@ -121,4 +121,28 @@ describe("Simplifier", function () {
 
     })
 
+    describe('SortVars', function () {
+
+        it('should return a array where the indices are sort in lexigraphical order', function () {
+            let variables = new Map();
+            variables.set("y", "2");
+            variables.set("x", "1");
+
+            let result = simplifier.sortVars(variables.entries());
+            let expected = [
+                [ "x", "1" ],
+                [ "y", "2" ],
+            ];
+
+            expect(result.length).to.equal(expected.length);
+
+            for (let i = 0; i < expected.length; i++) {
+                expect(result[i][0]).to.equal(expected[i][0]);
+                expect(result[0][i]).to.equal(expected[0][i]);
+            }
+
+        });
+
+    });
+
 });
