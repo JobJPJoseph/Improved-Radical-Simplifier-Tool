@@ -145,49 +145,182 @@ describe("Simplifier", function () {
 
     });
 
-    describe('SquareNumberLiteral', function () {
+    describe('SimplifyExponent', function () {
 
-        it('should accept a tree/node and square the value by 2 and return a tree/node', function () {
-            let tree = { type: "NumberLiteral", value: "12" };
-            let actual = simplifier.squareNumberLiteral(tree);
-            let expected = {
-                type: "BinaryExpression",
-                operator: "*",
-                left: { type: "NumberLiteral", value: "2" },
-                right: {
-                    type: "Root",
-                    index: { type: "NumberLiteral", value: "2" },
-                    radicand: { type: "NumberLiteral", value: "3" }
+        context('When base is a NumberLiteral type', function () {
+
+            it('should return a 1 if the expoenent value is 0', function () {
+                let tree = {
+                    type: "Exponentiation",
+                    base: { type: "NumberLiteral", value: "12" },
+                    exponent: { type: "NumberLiteral", value: "0" },
                 }
-            }
 
-            expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                let expected = { type: "NumberLiteral", value: "1" };
+
+                let actual = simplifier.simplifyExponent(tree);
+
+                expect(actual.type).to.equal(expected.type);
+                expect(actual.value).to.equal(expected.value);
+            });
+
+            it('should return a node if when the exponent value is 1', function () {
+                let tree = {
+                    type: "Exponentiation",
+                    base: { type: "NumberLiteral", value: "12" },
+                    exponent: { type: "NumberLiteral", value: "1" },
+                }
+
+                let expected = { type: "NumberLiteral", value: "12" };
+
+                let actual = simplifier.simplifyExponent(tree);
+
+                expect(actual.type).to.equal(expected.type);
+                expect(actual.value).to.equal(expected.value);
+            });
+
+            it('should return a node whose value is raised by the exponent value', function () {
+                let tree = {
+                    type: "Exponentiation",
+                    base: { type: "NumberLiteral", value: "12" },
+                    exponent: { type: "NumberLiteral", value: "2" },
+                }
+
+                let expected = { type: "NumberLiteral", value: "144" };
+
+                let actual = simplifier.simplifyExponent(tree);
+
+                expect(actual.type).to.equal(expected.type);
+                expect(actual.value).to.equal(expected.value);
+            });
+
+        });
+
+        context('When base is a Identifier type', function () {
+
+            it('should return a node if the expoenent value is 1', function () {
+                let tree = {
+                    type: "Exponentiation",
+                    base: { type: "Identifier", value: "y" },
+                    exponent: { type: "NumberLiteral", value: "1" },
+                }
+
+                let expected = { type: "Identifier", value: "y" };
+
+                let actual = simplifier.simplifyExponent(tree);
+
+                expect(actual.type).to.equal(expected.type);
+                expect(actual.value).to.equal(expected.value);
+            });
+
+            it('should return a 1 if when the exponent value is 0', function () {
+                let tree = {
+                    type: "Exponentiation",
+                    base: { type: "Identifier", value: "y" },
+                    exponent: { type: "NumberLiteral", value: "0" },
+                }
+
+                let expected = { type: "NumberLiteral", value: "1" };
+
+                let actual = simplifier.simplifyExponent(tree);
+
+                expect(actual.type).to.equal(expected.type);
+                expect(actual.value).to.equal(expected.value);
+            });
+
+            it('should return the tree unchanged', function () {
+                let tree = {
+                    type: "Exponentiation",
+                    base: { type: "Identifier", value: "y" },
+                    exponent: { type: "NumberLiteral", value: "2" },
+                }
+
+                let expected = {
+                    type: "Exponentiation",
+                    base: { type: "Identifier", value: "y" },
+                    exponent: { type: "NumberLiteral", value: "2" },
+                };
+
+                let actual = simplifier.simplifyExponent(tree);
+
+                expect(actual.type).to.equal(expected.type);
+                expect(actual.value).to.equal(expected.value);
+            });
 
         });
 
     });
 
-    describe('SquareVariable', function () {
-        let tree = {
-            type: "Exponentiation",
-            base: { type: "Identifier", value: "x"},
-            exponent: { type: "NumberLiteral", value: "3" },
-        }
+    describe('SimplifyRoot', function () {
 
-        let expected = {
-            type: "BinaryExpression",
-            left: { type: "Identifier", value: "x" },
-            right: {
-                type: "Root",
-                index: { type: "NumberLiteral", value: "2" },
-                radicand: { type: "Identifier", value: "x" },
-            },
-        }
+        context('SquareNumberLiteral', function () {
 
-        let actual = simplifier.squareVariable(tree);
-    });
+            it('should accept a tree/node and square the value by 2 and return a tree/node', function () {
+                let tree = { type: "NumberLiteral", value: "12" };
+                let actual = simplifier.squareNumberLiteral(tree);
+                let expected = {
+                    type: "BinaryExpression",
+                    operator: "*",
+                    left: { type: "NumberLiteral", value: "2" },
+                    right: {
+                        type: "Root",
+                        index: { type: "NumberLiteral", value: "2" },
+                        radicand: { type: "NumberLiteral", value: "3" }
+                    }
+                }
 
-    describe('SimplifyExponent', function () {
+                expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+            });
+
+        });
+
+        context('SquareVariable', function () {
+
+            it('should accept a tree/node and square the value by 2 and return a tree/node', function() {
+                let tree = { type: "Identifier", value: "x" }
+                let expected = {
+                    type: "Root",
+                    index: { type: "NumberLiteral", value: "2" },
+                    radicand: { type: "Identifier", value: "x" }
+                 };
+
+                let actual = simplifier.simplifyRoot(tree);
+
+                expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+            });
+
+        });
+
+        context('SquareExponentiation', function () {
+
+            context('When the base is an Identifier', function () {
+
+                it('should divide the exponent by the index of the root', function () {
+                    let tree = {
+                        type: "Exponentiation",
+                        base: { type: "Identifier", value: "x" },
+                        exponent: { type: "NumberLiteral", value: "3" }
+                    };
+
+                    let expected = {
+                        type: "BinaryExpression",
+                        operator: "*",
+                        left: { type: "Identifier", value: "x" },
+                        right: {
+                            type: "Root",
+                            index: { type: "NumberLiteral", value: "2" },
+                            radicand: { type: "Identifier", value: "x" }
+                        }
+                    };
+
+                    let actual = simplifier.simplifyRoot(tree);
+
+                    expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                });
+
+            });
+
+        });
 
     });
 
