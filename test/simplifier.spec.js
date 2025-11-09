@@ -328,6 +328,23 @@ describe("Simplifier", function () {
 
         context('NumberLiterals', function () {
 
+            it('should return an object the is discriptive of the term in a form of {coeff, vars, root}', function () {
+                let tokens = tokenizer.getTokens('12');
+                let tree = parser.parseExpression(tokens);
+                let flattenedMulti = simplifier.flattenMulti(tree);
+
+                let expected = {
+                    coeff: "12",
+                    vars: new Map(),
+                    root: { type: "NumberLiteral", value: "1" },
+                }
+
+                let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+
+            });
+
         });
 
         context('Identifiers', function () {
@@ -354,11 +371,15 @@ describe("Simplifier", function () {
 
     describe('NormalizeTerm', function () {
 
-    })
+        context('BinaryExpression', function () {
+
+        });
+
+    });
 
     describe('SimplifyMulti', function () {
 
-    })
+    });
 
     describe('simplifyAdd', function () {
 
