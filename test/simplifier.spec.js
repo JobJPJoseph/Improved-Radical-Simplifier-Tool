@@ -324,4 +324,44 @@ describe("Simplifier", function () {
 
     });
 
+    describe('NormalizeTerm', function () {
+
+        context('NumberLiterals', function () {
+
+        });
+
+        context('Identifiers', function () {
+
+        });
+
+        context('Exponentiations', function () {
+
+        });
+
+        context('Root', function () {
+
+        });
+
+    });
+
+    describe('BuildTreeFromNorm', function () {
+
+    });
+
+    describe('RebuildAstFromTree', function () {
+
+    });
+
+    describe('NormalizeTerm', function () {
+
+    })
+
+    describe('SimplifyMulti', function () {
+
+    })
+
+    describe('simplifyAdd', function () {
+
+    });
+
 });
