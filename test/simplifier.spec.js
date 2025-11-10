@@ -349,13 +349,121 @@ describe("Simplifier", function () {
 
         context('Identifiers', function () {
 
+            it('should return an object the is discriptive of the term in a form of {coeff, vars, root}', function () {
+                let tokens = tokenizer.getTokens('x');
+                let tree = parser.parseExpression(tokens);
+                let flattenedMulti = simplifier.flattenMulti(tree);
+                let map = new Map();
+                map.set('x', "1");
+
+                let expected = {
+                    coeff: "1",
+                    vars: map,
+                    root: { type: "NumberLiteral", value: "1" },
+                }
+
+                let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+            });
+
         });
 
         context('Exponentiations', function () {
 
+            context('NumberLiterals', function () {
+
+                it('should return an object the is discriptive of the term in a form of {coeff, vars, root}', function () {
+                    let tokens = tokenizer.getTokens('3^2');
+                    let tree = parser.parseExpression(tokens);
+                    let flattenedMulti = simplifier.flattenMulti(tree);
+
+                    let expected = {
+                        coeff: "9",
+                        vars: new Map(),
+                        root: { type: "NumberLiteral", value: "1" },
+                    }
+
+                    let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                    expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                });
+
+            });
+
+            context('Identifiers', function () {
+
+                it('should return an object the is discriptive of the term in a form of {coeff, vars, root}', function () {
+                    let tokens = tokenizer.getTokens('x^3');
+                    let tree = parser.parseExpression(tokens);
+                    let flattenedMulti = simplifier.flattenMulti(tree);
+                    let map = new Map();
+                    map.set('x', "3");
+
+                    let expected = {
+                        coeff: "1",
+                        vars: map,
+                        root: { type: "NumberLiteral", value: "1" },
+                    }
+
+                    let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                    expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                });
+
+            });
+
         });
 
         context('Root', function () {
+
+            context('NumberLiterals', function () {
+
+                it('should return an object the is discriptive of the term in a form of {coeff, vars, root}', function () {
+                    let tokens = tokenizer.getTokens('√(12)');
+                    let tree = parser.parseExpression(tokens);
+                    let flattenedMulti = simplifier.flattenMulti(tree);
+
+                    let expected = {
+                        coeff: "2",
+                        vars: new Map(),
+                        root: {
+                            type: "Root",
+                            index: { type: "NumberLiteral", value: "2" },
+                            radicand: { type: "NumberLiteral", value: "3" }
+                        }
+                    }
+
+                    let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                    expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                });
+
+            });
+
+            context('Identifiers', function () {
+
+                it('should return an object the is discriptive of the term in a form of {coeff, vars, root}', function () {
+                    let tokens = tokenizer.getTokens('√(y)');
+                    let tree = parser.parseExpression(tokens);
+                    let flattenedMulti = simplifier.flattenMulti(tree);
+
+                    let expected = {
+                        coeff: "1",
+                        vars: new Map(),
+                        root: {
+                            type: "Root",
+                            index: { type: "NumberLiteral", value: "2" },
+                            radicand: { type: "Identifier", value: "y" },
+                        }
+                    }
+
+                    let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                    expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                });
+
+            });
 
         });
 
