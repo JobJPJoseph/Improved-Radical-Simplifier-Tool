@@ -465,11 +465,80 @@ describe("Simplifier", function () {
 
             });
 
+            context('Exponentiation', function () {
+
+                context('When base is a NumberLiterals', function () {
+
+                    it('should square the tree and any whole Number should be added to coefficients', function () {
+                        let tokens = tokenizer.getTokens('√(3^3)');
+                        let tree = parser.parseExpression(tokens);
+                        let flattenedMulti = simplifier.flattenMulti(tree);
+
+                        let expected = {
+                            coeff: "3",
+                            vars: new Map(),
+                            root: {
+                                type: "Root",
+                                index: { type: "NumberLiteral", value: "2" },
+                                radicand: { type: "NumberLiteral", value: "3" },
+                            }
+                        }
+
+                        let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                        expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                    });
+
+                });
+
+                context("When base is an Identifier", function () {
+
+                    it('should square the tree and any whole variables should be added to vars', function () {
+                        let tokens = tokenizer.getTokens('√(x^3)');
+                        let tree = parser.parseExpression(tokens);
+                        let flattenedMulti = simplifier.flattenMulti(tree);
+                        let variables = new Map();
+                        variables.set("x", "1");
+
+                        let expected = {
+                            coeff: "1",
+                            vars: variables,
+                            root: {
+                                type: "Root",
+                                index: { type: "NumberLiteral", value: "2" },
+                                radicand: { type: "Identifier", value: "x" },
+                            }
+                        }
+
+                        let actual = simplifier.normalizeTerm(flattenedMulti);
+
+                        expect(JSON.stringify(actual)).to.equal(JSON.stringify(expected));
+                    });
+
+                });
+
+            });
+
         });
 
     });
 
     describe('BuildTreeFromNorm', function () {
+
+        it('should accept a normalizeTerm object and build an AST form it', function () {
+            let tokens = tokenizer.getTokens('9xy');
+            let astTree = parser.parseExpression(tokens);
+            let flattenedMulti = simplifier.flattenMulti(astTree);
+            let actualNorm = simplifier.normalizeTerm(flattenedMulti);
+            let actual = simplifier.buildAstFromNorm(actualNorm);
+
+            console.log(JSON.stringify(actual, null, 2))
+            console.log("==================");
+            console.log(JSON.stringify(astTree, null, 2))
+
+
+            // expect(JSON.stringify(actual)).to.equal(JSON.stringify(astTree));
+        });
 
     });
 
