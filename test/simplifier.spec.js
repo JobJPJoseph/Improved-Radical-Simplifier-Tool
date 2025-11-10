@@ -532,12 +532,7 @@ describe("Simplifier", function () {
             let actualNorm = simplifier.normalizeTerm(flattenedMulti);
             let actual = simplifier.buildAstFromNorm(actualNorm);
 
-            console.log(JSON.stringify(actual, null, 2))
-            console.log("==================");
-            console.log(JSON.stringify(astTree, null, 2))
-
-
-            // expect(JSON.stringify(actual)).to.equal(JSON.stringify(astTree));
+            expect(JSON.stringify(actual)).to.equal(JSON.stringify(astTree));
         });
 
     });
