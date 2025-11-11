@@ -711,21 +711,123 @@ describe("Simplifier", function () {
 
         context('NumberLiteral', function () {
 
+            it('should multiply the terms together', function () {
+                let tokens = tokenizer.getTokens('5 + (5 + 3) + 2');
+                let ast = parser.parseExpression(tokens);
+                let actual = simplifier.simplifyAdd(ast);
+
+                let expected = { type: "NumberLiteral", value: "15" };
+
+                expect(actual.value).to.equal(expected.value);
+            });
+
         });
 
         context('Identifiers', function () {
+
+            it('should multiply the terms together', function () {
+                let tokens = tokenizer.getTokens('x + (y + y) + x');
+                let ast = parser.parseExpression(tokens);
+                let actual = simplifier.simplifyAdd(ast);
+
+                let expected = {
+                    type: "BinaryExpression",
+                    operator: "+",
+                    left: {
+                        type: "BinaryExpression",
+                        operator: "*",
+                        left: { type: "NumberLiteral", value: "2" },
+                        right: { type: "Identifier", value: "x" }
+                    },
+                    right: {
+                        type: "BinaryExpression",
+                        operator: "*",
+                        left: { type: "NumberLiteral", value: "2" },
+                        right: { type: "Identifier", value: "y" }
+                    }
+                };
+
+                expect(JSON.stringify(actual, null, 2)).to.equal(JSON.stringify(expected, null, 2));
+            });
 
         });
 
         context('Exponentiations', function () {
 
+            it('should multiply the terms together', function () {
+                let tokens = tokenizer.getTokens('x^3 + x^2');
+                let ast = parser.parseExpression(tokens);
+                let actual = simplifier.simplifyAdd(ast);
+
+                let expected = {
+                    type: "BinaryExpression",
+                    operator: "+",
+                    left: {
+                        type: "Exponentiation",
+                        base: { type: "Identifier", value: "x" },
+                        exponent: { type: "NumberLiteral", value: "3" },
+                    },
+                    right: {
+                        type: "Exponentiation",
+                        base: { type: "Identifier", value: "x" },
+                        exponent: { type: "NumberLiteral", value: "2" },
+                    }
+                };
+
+                expect(JSON.stringify(actual, null, 2)).to.equal(JSON.stringify(expected, null, 2));
+            });
+
         });
 
         context('Roots', function () {
 
+            it('should multiply the terms together', function () {
+                let tokens = tokenizer.getTokens('2√(x) + 3√(x)');
+                let ast = parser.parseExpression(tokens);
+                let actual = simplifier.simplifyAdd(ast);
+
+                let expected = {
+                    type: "BinaryExpression",
+                    operator: "*",
+                    left: { type: "NumberLiteral", value: "5" },
+                    right: {
+                        type: "Root",
+                        index: { type: "NumberLiteral", value: "2" },
+                        radicand: { type: "Identifier", value: "x" }
+                    }
+                };
+
+                expect(JSON.stringify(actual, null, 2)).to.equal(JSON.stringify(expected, null, 2));
+            });
+
         });
 
         context('Mixed', function () {
+
+            it('should multiply the terms together', function () {
+                let tokens = tokenizer.getTokens('(2√(x) + 7) + (2√(x) + 7)');
+                let ast = parser.parseExpression(tokens);
+                let actual = simplifier.simplifyAdd(ast);
+
+                let expected = {
+                    type: "BinaryExpression",
+                    operator: "+",
+                    left: {
+                        type: "BinaryExpression",
+                        operator: "*",
+                        left: { type: "NumberLiteral", value: "4" },
+                        right: {
+                            type: "Root",
+                            index: { type: "NumberLiteral", value: "2" },
+                            radicand: { type: "Identifier", value: "x" },
+                        }
+                    },
+                    right: { type: "NumberLiteral", value: "14" },
+                };
+
+
+                expect(JSON.stringify(actual, null, 2)).to.equal(JSON.stringify(expected, null, 2));
+            });
 
         });
 
